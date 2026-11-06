@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your Musical Doctor</title>
+<meta name="description" content="Escucha Your Musical Doctor en Acast y Mixcloud.">
+<meta property="og:title" content="Your Musical Doctor">
+<meta property="og:description" content="Escucha Your Musical Doctor en Acast y Mixcloud.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<!-- Para que se vea la portada al compartir: <meta property="og:image" content="https://TU-DOMINIO/cover.jpg"> -->
+<meta name="theme-color" content="#d5e8b8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%238a7e08'/%3E%3Ccircle cx='32' cy='32' r='23' fill='%231b1b18'/%3E%3Ccircle cx='32' cy='32' r='9' fill='%23f3f2e8'/%3E%3Ccircle cx='32' cy='32' r='2.5' fill='%231b1b18'/%3E%3C/svg%3E">
+<style>
+@font-face {
+  font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 200 800; font-display: swap;
+  src: url("fonts/plus-jakarta-sans-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 200 800; font-display: swap;
+  src: url("fonts/plus-jakarta-sans-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+:root {
+  --bg: #f3f2e8;
+  --bg-from: #d5e8b8;
+  --bg-to: #f6df5e;
+  --surface: #faf9f1;
+  --ink: #23210a;
+  --muted: #5a584a;
+  --line: rgba(66, 72, 10, .28);
+  --line-strong: rgba(66, 72, 10, .45);
+  --accent: #8a7e08;
+  --accent-text: #6f6606;
+  --on-accent: #14120a;
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0; color: var(--ink); font: 16px/1.5 var(--font);
+  background: var(--bg-to);
+  min-height: 100vh;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1;
+  background: linear-gradient(160deg, var(--bg-from) 0%, var(--bg-to) 100%);
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent-text); outline-offset: 3px; }
+[hidden] { display: none !important; }
+
+/* Estructura a ancho completo: columna fija con la portada + columna de contenido */
+.page {
+  max-width: 1120px; margin: 0 auto;
+  padding: calc(56px + env(safe-area-inset-top, 0px)) 32px calc(64px + env(safe-area-inset-bottom, 0px));
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 80px; align-items: start;
+}
+.side { position: sticky; top: 40px; }
+.cover {
+  width: 100%; aspect-ratio: 1; border-radius: 28px; overflow: hidden; background: var(--ink);
+  box-shadow: 0 28px 50px -16px rgba(45, 40, 0, .4);
+}
+.cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cover .fallback { width: 100%; height: 100%; display: grid; place-items: center; font-size: 160px; font-weight: 800; color: var(--bg); }
+.about-side { margin-top: 56px; }
+.about-side p { margin: 0; max-width: 46ch; }
+.about-main { display: none; }
+
+/* Cabecera de texto */
+.eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: .95rem; color: var(--muted); margin: 0 0 14px; }
+.eyebrow .sep { width: 1.5px; height: 16px; border-radius: 1px; background: var(--muted); opacity: .5; }
+h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 800; line-height: 1.03; letter-spacing: -0.03em; margin: 0 0 6px; }
+
+/* Botón principal */
+.primary {
+  display: flex; align-items: center; gap: 16px; margin: 26px 0 10px; padding: 18px 22px;
+  background: var(--accent); color: var(--on-accent); border-radius: 18px; text-decoration: none;
+  box-shadow: 0 16px 30px -12px rgba(100, 90, 0, .55);
+}
+.primary:hover { filter: brightness(1.06); }
+.pico {
+  width: 38px; height: 38px; flex: none; border-radius: 50%; background: var(--bg);
+  display: grid; place-items: center;
+}
+.pico .ico { width: 22px; height: 22px; font-size: .62rem; }
+.pico .ico:not(.has-svg):not(.has-img) { color: var(--ink); }
+.primary .txt { display: flex; flex-direction: column; line-height: 1.3; }
+.primary strong { font-size: 1.05rem; }
+.primary small { font-size: .88rem; opacity: .75; }
+.primary .arrow { margin-left: auto; font-size: 1.3rem; }
+
+/* Lista de apps con líneas finas */
+.apps, .eps { list-style: none; margin: 0; padding: 0; }
+#apps { margin-top: 28px; }
+.row {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px 4px;
+  background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  color: inherit; text-decoration: none; text-align: left; font: 500 17px var(--font); cursor: pointer;
+}
+.ico {
+  width: 26px; height: 26px; flex: none; display: grid; place-items: center;
+  border: 1.8px solid currentColor; border-radius: 50%; font-size: .7rem; font-weight: 800;
+}
+.ico.has-svg, .ico.has-img { border: 0; border-radius: 0; }
+.ico svg, .ico img { width: 100%; height: 100%; display: block; }
+.ico svg { fill: currentColor; }
+.ico img { object-fit: contain; }
+.row .ico, .row .nm { transition: transform .18s ease; }
+@media (hover: hover) {
+  .row:hover .ico, .row:hover .nm { transform: translateX(10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row .ico, .row .nm { transition: none; }
+  .row:hover .ico, .row:hover .nm { transform: none; }
+}
+details > summary {
+  list-style: none; cursor: pointer; padding: 14px 4px; font-weight: 600; font-size: .95rem; color: var(--muted);
+}
+details > summary::-webkit-details-marker { display: none; }
+details[open] > summary { display: none; }
+
+/* Secciones */
+section { margin-top: 36px; }
+h2 { font-size: 1.1rem; margin: 0 0 12px; }
+#recent-title { font-size: .875rem; }
+.pbtn { width: 38px; height: 38px; flex: none; padding: 0; border: 0; border-radius: 50%; background: none; color: #111; display: grid; place-items: center; cursor: pointer; }
+.pbtn svg { width: 22px; height: 22px; display: block; fill: currentColor; }
+.pbtn .i-pause { display: none; }
+.pbtn[data-playing="true"] .i-play { display: none; }
+.pbtn[data-playing="true"] .i-pause { display: block; }
+.pbtn:hover { opacity: .8; }
+.player .pbtn { width: 44px; height: 44px; color: var(--bg); }
+.player .pbtn svg { width: 26px; height: 26px; }
+.about-main p { margin: 0; }
+.social { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 18px 0 0; padding: 0; }
+.social a { position: relative; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border-radius: 10px; color: var(--muted); transition: color .2s ease; }
+.social a:hover, .social a:focus-visible { color: var(--c, var(--ink)); }
+.social svg { width: 20px; height: 20px; display: block; fill: currentColor; }
+.license { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 22px auto 0; max-width: 36ch; text-align: center; font-size: .72rem; line-height: 1.5; color: var(--muted); }
+.license img { display: block; width: 41px; height: 20px; opacity: .6; transition: opacity .2s ease; }
+.license a:hover img { opacity: .9; }
+.license a { color: inherit; }
+.license p a { text-decoration: none; }
+.license p a:hover { color: var(--ink); }
+.license-foot { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; text-align: left; max-width: none; gap: 8px 12px; margin: 18px 0 0; padding-top: 18px; border-top: 1px solid var(--line); }
+.eps li + li { border-top: 1px solid var(--line); }
+.ep { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
+.ep .col { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.eps .t { font-weight: 700; line-height: 1.35; display: block; }
+.eps .m { color: var(--muted); font-size: .88rem; display: block; }
+
+.btn {
+  font: 600 .92rem var(--font); background: transparent; color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 999px; padding: 8px 18px; cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); }
+
+dialog { border: 0; border-radius: 22px; padding: 24px; max-width: 320px; width: calc(100% - 40px); text-align: center; background: var(--bg); color: var(--ink); }
+dialog::backdrop { background: rgba(35, 33, 10, .55); }
+#qr-box { width: 220px; height: 220px; margin: 0 auto 12px; background: #fff; border-radius: 12px; padding: 8px; }
+#qr-box svg { width: 100%; height: 100%; display: block; }
+.dlg-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+a.btn { text-decoration: none; }
+.btn { display: inline-flex; align-items: center; }
+.sico { width: 24px; height: 24px; flex: none; color: var(--muted); transition: color .2s ease; }
+.sico svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+.btn:hover .sico, .btn:focus-visible .sico { color: var(--c); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Botón y menú Compartir */
+.actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.act-left { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.follow { display: flex; align-items: center; gap: 6px; }
+.follow-lbl { font-size: .85rem; color: var(--muted); white-space: nowrap; }
+.follow .social { margin: 0; justify-content: flex-start; flex-wrap: nowrap; gap: 0; }
+.share-wrap { position: relative; }
+.share-btn, .copy-btn { gap: 8px; padding: 8px 14px 8px 12px; font-size: .85rem; }
+.share-btn .sico, .copy-btn .sico { width: 18px; height: 18px; }
+.share-btn, .copy-btn { border-color: var(--line-strong); }
+.share-btn:hover, .copy-btn:hover { border-color: var(--ink); }
+.menu {
+  position: absolute; left: 0; top: calc(100% + 10px); z-index: 15; min-width: 236px; padding: 8px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: 0 18px 40px -14px rgba(30, 28, 0, .5); transform-origin: top left; animation: pop .14s ease;
+}
+.menu.up { top: auto; bottom: calc(100% + 10px); transform-origin: bottom left; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+.menu .item {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 0; border-radius: 10px;
+  background: none; color: var(--ink); font: 500 .95rem var(--font); text-align: left; text-decoration: none; cursor: pointer;
+}
+.menu .item:hover, .menu .item:focus-visible { background: rgba(35, 33, 10, .07); }
+.menu .item:hover .sico, .menu .item:focus-visible .sico { color: var(--c); }
+.menu .sico { width: 22px; height: 22px; }
+.menu .sep { height: 1px; margin: 6px 8px; background: var(--line); }
+@media (prefers-reduced-motion: reduce) { .menu { animation: none; } }
+.inp { width: 100%; font: inherit; padding: 10px 12px; margin-bottom: 10px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+dialog .u { font-size: .85rem; color: var(--muted); word-break: break-all; margin: 0 0 4px; }
+dialog .n { font-size: .85rem; margin: 0 0 16px; }
+
+/* Reproductor fijo abajo */
+.player {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--bg); box-shadow: 0 -10px 30px rgba(0, 0, 0, .25);
+}
+.player .in { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+.player .mid { flex: 1; min-width: 0; }
+.player .pt { font-weight: 700; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player .row2 { display: flex; align-items: center; gap: 10px; }
+.player input[type=range] { flex: 1; min-width: 0; accent-color: var(--accent); }
+.player .tm { font-size: .78rem; opacity: .85; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.player .err { font-size: .8rem; color: #ffd7a1; }
+.player .x { background: none; border: 0; color: inherit; font-size: 1.5rem; line-height: 1; padding: 6px; cursor: pointer; }
+body.has-player .page { padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)); }
+
+/* Celular y pantallas angostas: una sola columna */
+@media (max-width: 860px) {
+  .page { grid-template-columns: 1fr; gap: 28px; padding: calc(28px + env(safe-area-inset-top, 0px)) 20px calc(40px + env(safe-area-inset-bottom, 0px)); }
+  .side { position: static; max-width: 380px; width: 100%; margin: 0 auto; }
+  .cover .fallback { font-size: 110px; }
+  .about-side { display: none; }
+  .about-main { display: block; }
+  h1 { margin-bottom: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <aside class="side">
+    <div class="cover" id="cover"></div>
+    <div class="about-side">
+      <p data-desc></p>
+    </div>
+  </aside>
+
+  <main>
+    <p class="eyebrow" id="meta"></p>
+    <h1 id="title"></h1>
+
+    <a class="primary" id="primary" hidden rel="noopener">
+      <span class="pico" id="primary-ico" aria-hidden="true"></span>
+      <span class="txt"><strong id="primary-name"></strong><small>También funciona en tu navegador</small></span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+
+    <ul class="apps" id="apps"></ul>
+    <details id="more" hidden>
+      <summary id="more-sum"></summary>
+      <ul class="apps" id="apps-more"></ul>
+    </details>
+
+
+    <section class="about-main">
+      <p data-desc></p>
+    </section>
+
+    <section id="recent-sec">
+      <h2 id="recent-title">Últimos episodios</h2>
+      <ul class="eps" id="eps"></ul>
+    </section>
+
+    <div class="actions">
+      <div class="act-left">
+        <div class="share-wrap">
+          <button class="btn share-btn" id="share-btn" type="button" aria-haspopup="menu" aria-expanded="false"><span class="lbl">Compartir</span></button>
+          <div class="menu" id="share-menu" role="menu" aria-label="Compartir" hidden>
+            <a class="item" role="menuitem" id="share-wa" target="_blank" rel="noopener"><span class="lbl">WhatsApp</span></a>
+            <a class="item" role="menuitem" id="share-x" target="_blank" rel="noopener"><span class="lbl">X</span></a>
+            <a class="item" role="menuitem" id="share-fb" target="_blank" rel="noopener"><span class="lbl">Facebook</span></a>
+            <a class="item" role="menuitem" id="share-tg" target="_blank" rel="noopener"><span class="lbl">Telegram</span></a>
+            <a class="item" role="menuitem" id="share-in" target="_blank" rel="noopener"><span class="lbl">LinkedIn</span></a>
+            <a class="item" role="menuitem" id="share-bs" target="_blank" rel="noopener"><span class="lbl">Bluesky</span></a>
+            <button class="item" role="menuitem" id="share-ma" type="button"><span class="lbl">Mastodon</span></button>
+            <button class="item" role="menuitem" id="qr-open" type="button" hidden><span class="lbl">Código QR</span></button>
+          </div>
+        </div>
+        <button class="btn copy-btn" id="copy" type="button"><span class="lbl">Copiar enlace</span></button>
+      </div>
+      <div class="follow">
+        <span class="follow-lbl">Seguinos en</span>
+        <ul class="social" data-social></ul>
+      </div>
+    </div>
+
+    <div class="license license-foot" data-license></div>
+
+  </main>
+</div>
+
+<dialog id="qr-dialog">
+  <div id="qr-box" role="img" aria-label="Código QR de esta página"></div>
+  <p class="u" id="qr-url"></p>
+  <p class="n">Para un cartel o una diapositiva.</p>
+  <div class="dlg-btns">
+    <a class="btn" id="qr-dl" download="qr.svg">Descargar</a>
+    <button class="btn" id="qr-close" type="button">Cerrar</button>
+  </div>
+</dialog>
+
+<dialog id="mast-dialog">
+  <p class="n">¿Cuál es tu instancia de Mastodon?</p>
+  <input class="inp" id="mast-input" type="text" inputmode="url" placeholder="mastodon.social" autocomplete="off" aria-label="Instancia de Mastodon">
+  <p class="u" id="mast-err" hidden>Ingresá un dominio válido, por ejemplo mastodon.social</p>
+  <div class="dlg-btns">
+    <button class="btn" id="mast-go" type="button">Compartir</button>
+    <button class="btn" id="mast-cancel" type="button">Cancelar</button>
+  </div>
+</dialog>
+
+<div class="player" id="player" hidden role="region" aria-label="Reproductor">
+  <div class="in">
+    <button class="pbtn" id="p-toggle" type="button" aria-label="Reproducir"></button>
+    <div class="mid">
+      <div class="pt" id="p-title"></div>
+      <div class="row2">
+        <input id="seek" type="range" min="0" max="100" step="1" value="0" aria-label="Posición del episodio">
+        <span class="tm" id="p-time">0:00</span>
+      </div>
+      <div class="err" id="p-err" hidden>No se pudo reproducir. Probá abrirlo en Acast.</div>
+    </div>
+    <button class="x" id="p-close" type="button" aria-label="Cerrar reproductor">×</button>
+  </div>
+  <audio id="audio" preload="none"></audio>
+</div>
+
+<script src="episodes.js"></script>
+<script src="qrcode.js"></script>
+<script>
+/* ============================================================
+   CONFIGURACIÓN: editá solo este bloque.
+   - Plataformas con url vacía ("") no se muestran.
+   - "primary" es la plataforma del botón grande (opcional).
+   - Los episodios salen de episodes.js (generado con update-episodes.mjs).
+   - El código QR se genera en el navegador con qrcode.js (debe estar junto a este archivo).
+   - Color de acento: variable --accent en el CSS.
+   ============================================================ */
+const CONFIG = {
+  title: "Your Musical Doctor",
+  author: "Ezequiel Espósito",
+  description: "A weekly selection of Reggae & Jamaican Music.",
+  category: "",       // opcional: se muestra junto a la cantidad de episodios
+  cover: "",          // ej: "cover.jpg" (descargá la portada y subila al repo)
+  feed: "https://feeds.acast.com/public/shows/ymd",   // activa la fila "Copiar feed RSS"
+  primary: "",        // opcional: nombre de una plataforma para destacarla con un botón grande
+  visibleApps: 8,     // apps visibles antes de "N apps más"
+  maxEpisodes: 5,     // cuántos episodios se pueden escuchar en la página
+  license: {          // se muestra bajo los íconos de redes; para ocultarla: license: null
+    name: "CC-BY 4.0 Internacional",
+    url: "https://creativecommons.org/licenses/by/4.0/deed.es",
+    source: "https://shows.acast.com/ymd",   // enlace del título en la leyenda (la fuente de la obra)
+    badge: "img/cc-by-icons.svg"
+  },
+  social: [           // redes del podcast (se muestran bajo la descripción); url vacía = se oculta
+    { name: "X",         url: "https://x.com/YourMusicalDr" },
+    { name: "YouTube",   url: "https://www.youtube.com/@YourMusicalDoctor" },
+    { name: "Instagram", url: "https://www.instagram.com/yourmusicaldoctor" },
+    { name: "Facebook",  url: "https://www.facebook.com/MusicalDoc/" }
+  ],
+  platforms: [
+    // logo: ruta al archivo del logo. Acast, TuneIn y Amazon Music esperan sus archivos en la carpeta logos/ (ver logos/LEEME.txt).
+    // Mientras el archivo no exista, se muestra la inicial. Mixcloud, Deezer y Apple Podcasts ya traen su logo incorporado.
+    { name: "Acast",           url: "https://shows.acast.com/ymd",                 logo: "logos/acast.png" },
+    // Deezer oculto por ahora. Para mostrarlo de nuevo, poné url: "https://www.deezer.com/show/3237522"
+    { name: "Deezer",          url: "",           logo: "" },
+    { name: "TuneIn",          url: "https://tunein.com/podcasts/Your-Musical-Doctor-p1605365",          logo: "logos/tunein.svg" },
+    { name: "Apple Podcasts",  url: "https://podcasts.apple.com/ar/podcast/your-musical-doctor/id6827788500", logo: "" },
+    { name: "Amazon Music",    url: "https://music.amazon.com/podcasts/e0a8b8d8-2b47-4b29-aade-3f5c34feeb83/your-musical-doctor", logo: "logos/amazon-music.svg" },
+    // Mixcloud oculto por ahora. Para mostrarlo de nuevo, poné url: "https://www.mixcloud.com/musicaldoc/"
+    { name: "Mixcloud",        url: "",        logo: "" }
+  ]
+};
+
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const mk = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  };
+  const DATA = window.EPISODES || { count: 0, episodes: [] };
+
+  function fmtDate(iso) {
+    if (!iso) return "";
+    const d = new Date(iso + "T00:00:00");
+    return isNaN(d) ? "" : d.toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }).replace(/\./g, "");
+  }
+  function fmtDur(sec) {
+    if (!sec) return "";
+    const h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+    return h ? h + " h " + String(m).padStart(2, "0") + " min" : m + " min";
+  }
+  function copyToClipboard(text) {
+    return new Promise((resolve) => {
+      const legacy = () => {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text; ta.setAttribute("readonly", "");
+          ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+          document.body.appendChild(ta);
+          ta.select(); ta.setSelectionRange(0, text.length);
+          const ok = document.execCommand("copy");
+          document.body.removeChild(ta);
+          resolve(ok);
+        } catch (e) { resolve(false); }
+      };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => resolve(true), legacy);
+      else legacy();
+    });
+  }
+
+  /* Cabecera */
+  document.title = CONFIG.title;
+  $("title").textContent = CONFIG.title;
+  document.querySelectorAll("[data-desc]").forEach((p) => (p.textContent = CONFIG.description));
+  const metaParts = [];
+  if (DATA.count) metaParts.push(DATA.count + " episodios");
+  if (CONFIG.category) metaParts.push(CONFIG.category);
+  metaParts.forEach((t, i) => {
+    if (i) { const sep = mk("span", "sep"); sep.setAttribute("aria-hidden", "true"); $("meta").appendChild(sep); }
+    $("meta").appendChild(mk("span", null, t));
+  });
+
+  const cover = $("cover");
+  if (CONFIG.cover) {
+    const img = mk("img"); img.src = CONFIG.cover; img.alt = "Portada de " + CONFIG.title; cover.appendChild(img);
+  } else {
+    const f = mk("div", "fallback", CONFIG.title.trim().charAt(0).toUpperCase());
+    f.setAttribute("aria-hidden", "true"); cover.appendChild(f);
+  }
+
+  /* Logos incluidos (Simple Icons, licencia CC0). Para otras plataformas: campo logo en CONFIG.platforms */
+  const ICONS = {
+    "Mixcloud": { d: "M2.462 8.596l1.372 6.49h.319l1.372-6.49h2.462v6.808H6.742v-5.68l.232-.81h-.402l-1.43 6.49H2.854l-1.44-6.49h-.391l.222.81v5.68H0V8.596zM24 8.63v1.429L21.257 12 24 13.941v1.43l-3.235-2.329h-.348l-3.226 2.329v-1.43l2.734-1.94-2.733-1.942V8.63l3.225 2.338h.348zm-7.869 2.75v1.24H9.304v-1.24z", color: "#5000FF" },
+    "Deezer": { d: "M.693 10.024c.381 0 .693-1.256.693-2.807 0-1.55-.312-2.807-.693-2.807C.312 4.41 0 5.666 0 7.217s.312 2.808.693 2.808ZM21.038 1.56c-.364 0-.684.805-.91 2.096C19.765 1.446 19.184 0 18.526 0c-.78 0-1.464 2.036-1.784 5-.312-2.158-.788-3.536-1.325-3.536-.745 0-1.386 2.704-1.62 6.472-.442-1.932-1.083-3.145-1.793-3.145s-1.35 1.213-1.793 3.145c-.242-3.76-.874-6.463-1.628-6.463-.537 0-1.013 1.378-1.325 3.535C6.938 2.036 6.262 0 5.474 0c-.658 0-1.247 1.447-1.602 3.665-.217-1.291-.546-2.105-.91-2.105-.675 0-1.221 2.807-1.221 6.272 0 3.466.546 6.273 1.221 6.273.277 0 .537-.476.736-1.273.32 2.928.996 4.938 1.776 4.938.606 0 1.143-1.204 1.507-3.11.251 3.622.875 6.195 1.602 6.195.46 0 .875-1.023 1.187-2.677C10.142 21.6 11 24 12.004 24c1.005 0 1.863-2.4 2.235-5.822.312 1.654.727 2.677 1.186 2.677.728 0 1.352-2.573 1.603-6.195.364 1.906.9 3.11 1.507 3.11.78 0 1.455-2.01 1.775-4.938.208.797.46 1.273.737 1.273.675 0 1.22-2.807 1.22-6.273-.008-3.457-.553-6.272-1.23-6.272ZM23.307 10.024c.381 0 .693-1.256.693-2.807 0-1.55-.312-2.807-.693-2.807-.381 0-.693 1.256-.693 2.807s.312 2.808.693 2.808Z", color: "#A238FF" },
+    "Apple Podcasts": { d: "M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0zm6.525 2.568c2.336 0 4.448.902 6.056 2.587 1.224 1.272 1.912 2.619 2.264 4.392.12.59.12 2.2.007 2.864a8.506 8.506 0 01-3.24 5.296c-.608.46-2.096 1.261-2.336 1.261-.088 0-.096-.091-.056-.46.072-.592.144-.715.48-.856.536-.224 1.448-.874 2.008-1.435a7.644 7.644 0 002.008-3.536c.208-.824.184-2.656-.048-3.504-.728-2.696-2.928-4.792-5.624-5.352-.784-.16-2.208-.16-3 0-2.728.56-4.984 2.76-5.672 5.528-.184.752-.184 2.584 0 3.336.456 1.832 1.64 3.512 3.192 4.512.304.2.672.408.824.472.336.144.408.264.472.856.04.36.03.464-.056.464-.056 0-.464-.176-.896-.384l-.04-.03c-2.472-1.216-4.056-3.274-4.632-6.012-.144-.706-.168-2.392-.03-3.04.36-1.74 1.048-3.1 2.192-4.304 1.648-1.737 3.768-2.656 6.128-2.656zm.134 2.81c.409.004.803.04 1.106.106 2.784.62 4.76 3.408 4.376 6.174-.152 1.114-.536 2.03-1.216 2.88-.336.43-1.152 1.15-1.296 1.15-.023 0-.048-.272-.048-.603v-.605l.416-.496c1.568-1.878 1.456-4.502-.256-6.224-.664-.67-1.432-1.064-2.424-1.246-.64-.118-.776-.118-1.448-.008-1.02.167-1.81.562-2.512 1.256-1.72 1.704-1.832 4.342-.264 6.222l.413.496v.608c0 .336-.027.608-.06.608-.03 0-.264-.16-.512-.36l-.034-.011c-.832-.664-1.568-1.842-1.872-2.997-.184-.698-.184-2.024.008-2.72.504-1.878 1.888-3.335 3.808-4.019.41-.145 1.133-.22 1.814-.211zm-.13 2.99c.31 0 .62.06.844.178.488.253.888.745 1.04 1.259.464 1.578-1.208 2.96-2.72 2.254h-.015c-.712-.331-1.096-.956-1.104-1.77 0-.733.408-1.371 1.112-1.745.224-.117.534-.176.844-.176zm-.011 4.728c.988-.004 1.706.349 1.97.97.198.464.124 1.932-.218 4.302-.232 1.656-.36 2.074-.68 2.356-.44.39-1.064.498-1.656.288h-.003c-.716-.257-.87-.605-1.164-2.644-.341-2.37-.416-3.838-.218-4.302.262-.616.974-.966 1.97-.97z", color: "#9933CC" },
+    "RSS": { d: "M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z", color: "#F57C00" }
+  };
+  function logo(name, file) {
+    const wrap = mk("span", "ico");
+    wrap.setAttribute("aria-hidden", "true");
+    if (file) {
+      const img = mk("img"); img.src = file; img.alt = "";
+      img.onerror = () => { wrap.classList.remove("has-img"); wrap.textContent = name.charAt(0); };
+      wrap.classList.add("has-img"); wrap.appendChild(img);
+      return wrap;
+    }
+    const ic = ICONS[name];
+    if (ic) {
+      wrap.classList.add("has-svg");
+      wrap.style.color = ic.color;
+      wrap.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + ic.d + '"/></svg>';
+      return wrap;
+    }
+    wrap.textContent = name.charAt(0);
+    return wrap;
+  }
+
+  /* Plataformas */
+  const active = CONFIG.platforms.filter((p) => p.url);
+  const primary = active.find((p) => p.name === CONFIG.primary) || null;
+  if (primary) {
+    $("primary").href = primary.url;
+    $("primary-ico").appendChild(logo(primary.name, primary.logo));
+    $("primary-name").textContent = "Escuchar en " + primary.name;
+    $("primary").hidden = false;
+  }
+  const rest = active.filter((p) => p !== primary);
+  function appRow(p) {
+    const li = mk("li"), a = mk("a", "row");
+    a.href = p.url; a.target = "_blank"; a.rel = "noopener";
+    const ico = logo(p.name, p.logo);
+    a.append(ico, mk("span", "nm", p.name));
+    li.appendChild(a); return li;
+  }
+  function rssRow() {
+    const li = mk("li"), a = mk("a", "row");
+    a.href = CONFIG.feed; a.target = "_blank"; a.rel = "noopener";
+    a.append(logo("RSS"), mk("span", "nm", "Feed RSS"));
+    li.appendChild(a); return li;
+  }
+  rest.slice(0, CONFIG.visibleApps).forEach((p) => $("apps").appendChild(appRow(p)));
+  const extra = rest.slice(CONFIG.visibleApps);
+  if (extra.length) {
+    extra.forEach((p) => $("apps-more").appendChild(appRow(p)));
+    if (CONFIG.feed) $("apps-more").appendChild(rssRow());
+    const n = extra.length + (CONFIG.feed ? 1 : 0);
+    $("more-sum").textContent = n + (n === 1 ? " app más" : " apps más");
+    $("more").hidden = false;
+  } else if (CONFIG.feed) {
+    $("apps").appendChild(rssRow());
+  }
+
+  /* Episodios y reproductor */
+  const eps = DATA.episodes || [];
+  const epMeta = (e) => [fmtDate(e.date), fmtDur(e.durationSec)].filter(Boolean).join(" · ");
+  const PLAY_SVG = '<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15L19.5 12z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg>';
+  const audio = $("audio"), player = $("player"), seek = $("seek"), pToggle = $("p-toggle");
+  const btns = [];
+  let current = null, seeking = false;
+  pToggle.innerHTML = PLAY_SVG;
+
+  function fmtTime(s) {
+    if (!isFinite(s)) return "0:00";
+    s = Math.floor(s);
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = String(s % 60).padStart(2, "0");
+    return h ? h + ":" + String(m).padStart(2, "0") + ":" + x : m + ":" + x;
+  }
+  function refresh() {
+    const playing = !audio.paused && !audio.ended;
+    btns.forEach((b) => {
+      const on = playing && b.dataset.audio === current;
+      b.dataset.playing = on;
+      b.setAttribute("aria-label", (on ? "Pausar: " : "Reproducir: ") + b.dataset.title);
+    });
+    pToggle.dataset.playing = playing;
+    pToggle.setAttribute("aria-label", playing ? "Pausar" : "Reproducir");
+  }
+  function play(e) {
+    if (current === e.audio) { audio.paused ? audio.play().catch(() => {}) : audio.pause(); return; }
+    current = e.audio;
+    audio.src = e.audio;
+    $("p-title").textContent = e.title;
+    $("p-err").hidden = true;
+    seek.value = 0; $("p-time").textContent = "0:00";
+    player.hidden = false;
+    document.body.classList.add("has-player");
+    audio.play().catch(() => { $("p-err").hidden = false; });
+    refresh();
+  }
+  function playBtn(e) {
+    const b = mk("button", "pbtn");
+    b.type = "button"; b.innerHTML = PLAY_SVG;
+    b.dataset.audio = e.audio; b.dataset.title = e.title;
+    b.addEventListener("click", () => play(e));
+    btns.push(b); return b;
+  }
+
+  audio.addEventListener("play", refresh);
+  audio.addEventListener("pause", refresh);
+  audio.addEventListener("ended", refresh);
+  audio.addEventListener("error", () => { if (current) $("p-err").hidden = false; });
+  audio.addEventListener("loadedmetadata", () => { seek.max = Math.floor(audio.duration) || 100; });
+  audio.addEventListener("timeupdate", () => {
+    if (!seeking) seek.value = audio.currentTime;
+    $("p-time").textContent = fmtTime(audio.currentTime) + " / " + fmtTime(audio.duration);
+  });
+  seek.addEventListener("pointerdown", () => { seeking = true; });
+  seek.addEventListener("input", () => { audio.currentTime = Number(seek.value); });
+  seek.addEventListener("change", () => { seeking = false; });
+  pToggle.addEventListener("click", () => { if (current) audio.paused ? audio.play().catch(() => {}) : audio.pause(); });
+  $("p-close").addEventListener("click", () => {
+    audio.pause(); audio.removeAttribute("src"); audio.load();
+    current = null; player.hidden = true;
+    document.body.classList.remove("has-player");
+    refresh();
+  });
+
+  const shown = eps.slice(0, CONFIG.maxEpisodes || 5);
+  if (shown.length) {
+    shown.forEach((e) => {
+      const li = mk("li"), row = mk("div", "ep");
+      if (e.audio) row.appendChild(playBtn(e));
+      const col = mk("span", "col");
+      col.append(mk("span", "t", e.title), mk("span", "m", epMeta(e)));
+      row.appendChild(col);
+      li.appendChild(row);
+      $("eps").appendChild(li);
+    });
+  } else {
+    $("recent-title").hidden = true;
+  }
+
+  /* Menú Compartir: en el celular abre el menú nativo; en la computadora, este menú */
+  const shareBtn = $("share-btn"), menu = $("share-menu");
+  const canNativeShare = !!navigator.share && !!window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  function closeMenu() { menu.hidden = true; shareBtn.setAttribute("aria-expanded", "false"); }
+  function openMenu() {
+    menu.hidden = false;
+    shareBtn.setAttribute("aria-expanded", "true");
+    menu.classList.remove("up");
+    const r = shareBtn.getBoundingClientRect();
+    if (window.innerHeight - r.bottom < menu.offsetHeight + 20 && r.top > menu.offsetHeight + 20) menu.classList.add("up");
+    const first = menu.querySelector(".item:not([hidden])");
+    if (first) first.focus();
+  }
+  shareBtn.addEventListener("click", () => {
+    if (!menu.hidden) { closeMenu(); return; }
+    if (canNativeShare) {
+      navigator.share({ title: CONFIG.title, text: CONFIG.title + " · escuchá los episodios", url: location.href })
+        .catch((e) => { if (e && e.name !== "AbortError") openMenu(); });
+      return;
+    }
+    openMenu();
+  });
+  document.addEventListener("click", (e) => { if (!menu.hidden && !e.target.closest(".share-wrap")) closeMenu(); });
+  document.addEventListener("keydown", (e) => {
+    if (menu.hidden) return;
+    if (e.key === "Escape") { closeMenu(); shareBtn.focus(); return; }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const items = [...menu.querySelectorAll(".item:not([hidden])")];
+      const i = items.indexOf(document.activeElement);
+      const next = e.key === "ArrowDown" ? (i + 1) % items.length : (i <= 0 ? items.length - 1 : i - 1);
+      items[next].focus();
+    }
+  });
+  menu.addEventListener("click", (e) => { const it = e.target.closest(".item"); if (it && it.id !== "copy") closeMenu(); });
+
+  const copyLbl = $("copy").querySelector(".lbl");
+  let copyTimer = 0;
+  $("copy").addEventListener("click", () => {
+    copyToClipboard(location.href).then((ok) => {
+      if (!ok) { window.prompt("Copiá el enlace:", location.href); return; }
+      copyLbl.textContent = "¡Enlace copiado!";
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(() => { copyLbl.textContent = "Copiar enlace"; }, 1800);
+    });
+  });
+
+  /* Íconos de compartir: grises por defecto, con el color de la marca al pasar el mouse (Simple Icons, CC0) */
+  const SHARE_ICONS = {
+    "copy": { d: "M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z", color: "#6f6606" },
+    "share-x": { d: "M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z", color: "#000000" },
+    "share-wa": { d: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z", color: "#25D366" },
+    "share-fb": { d: "M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z", color: "#0866FF" },
+    "share-tg": { d: "M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z", color: "#26A5E4" },
+    "share-in": { d: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z", color: "#0A66C2" },
+    "share-bs": { d: "M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026", color: "#1185FE" },
+    "share-ma": { d: "M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z", color: "#6364FF" },
+    "qr-open": { d: "M3 3h8v8H3V3zm2 2v4h4V5H5zM13 3h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zM13 13h3v3h-3zM18 13h3v3h-3zM13 18h3v3h-3zM18 18h3v3h-3z", color: "#6f6606" }
+  };
+  Object.keys(SHARE_ICONS).forEach((id) => {
+    const el = $(id), ic = SHARE_ICONS[id];
+    if (!el) return;
+    const s = mk("span", "sico");
+    s.style.setProperty("--c", ic.color);
+    s.setAttribute("aria-hidden", "true");
+    s.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + ic.d + '"/></svg>';
+    el.insertBefore(s, el.firstChild);
+  });
+  /* Ícono del botón Compartir */
+  const shareIco = mk("span", "sico");
+  shareIco.style.setProperty("--c", "#6f6606");
+  shareIco.setAttribute("aria-hidden", "true");
+  shareIco.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>';
+  shareBtn.insertBefore(shareIco, shareBtn.firstChild);
+
+  /* Redes del podcast: grises, con el color de la marca al pasar el mouse (Simple Icons, CC0) */
+  const SOCIAL_ICONS = {
+    "X": { d: "M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z", color: "#000000", size: 20 },
+    "YouTube": { d: "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z", color: "#FF0000", size: 24 },
+    "Instagram": { d: "M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077", color: "#FF0069", size: 19 },
+    "Facebook": { d: "M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z", color: "#0866FF", size: 21 }
+  };
+  document.querySelectorAll("[data-social]").forEach((ul) => {
+    (CONFIG.social || []).forEach((s) => {
+      if (!s.url) return;
+      const ic = SOCIAL_ICONS[s.name];
+      const li = mk("li"), a = mk("a");
+      a.href = s.url; a.target = "_blank"; a.rel = "noopener";
+      if (ic) {
+        a.style.setProperty("--c", ic.color);
+        a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:' + (ic.size || 20) + 'px;height:' + (ic.size || 20) + 'px"><path d="' + ic.d + '"/></svg>';
+      } else {
+        a.textContent = s.name.charAt(0);
+      }
+      a.appendChild(mk("span", "sr", s.name));
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+  });
+
+  /* Licencia Creative Commons */
+  document.querySelectorAll("[data-license]").forEach((box) => {
+    const L = CONFIG.license;
+    if (!L) return;
+    const badge = mk("a");
+    badge.href = L.url; badge.target = "_blank"; badge.rel = "license noopener";
+    const img = mk("img");
+    img.src = L.badge; img.alt = L.name; img.width = 41; img.height = 20;
+    badge.appendChild(img);
+    const p = mk("p");
+    p.style.margin = "0";
+    if (L.source) {
+      const t = mk("a", null, CONFIG.title);
+      t.href = L.source; t.target = "_blank"; t.rel = "noopener";
+      p.appendChild(t);
+    } else {
+      p.appendChild(document.createTextNode(CONFIG.title));
+    }
+    p.appendChild(document.createTextNode(", de " + CONFIG.author + ", bajo licencia "));
+    const a = mk("a", null, L.name);
+    a.href = L.url; a.target = "_blank"; a.rel = "license noopener";
+    p.append(a, document.createTextNode("."));
+    box.append(badge, p);
+  });
+
+  /* Compartir en redes */
+  const shareUrl = location.href;
+  const shareText = CONFIG.title + " · escuchá los episodios";
+  $("share-x").href = "https://x.com/intent/post?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(shareUrl);
+  $("share-wa").href = "https://wa.me/?text=" + encodeURIComponent(shareText + " " + shareUrl);
+  $("share-fb").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl);
+  $("share-tg").href = "https://t.me/share/url?url=" + encodeURIComponent(shareUrl) + "&text=" + encodeURIComponent(shareText);
+  $("share-in").href = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(shareUrl);
+  $("share-bs").href = "https://bsky.app/intent/compose?text=" + encodeURIComponent(shareText + " " + shareUrl);
+
+  /* Mastodon: no hay un servidor único, así que se pide la instancia (se recuerda en este navegador) */
+  const mastDialog = $("mast-dialog"), mastInput = $("mast-input");
+  const cleanInstance = (v) => {
+    v = v.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "").replace(/^@.*@/, "");
+    return /^[a-z0-9.-]+\.[a-z]{2,}$/.test(v) ? v : "";
+  };
+  function mastGo() {
+    const inst = cleanInstance(mastInput.value);
+    $("mast-err").hidden = !!inst;
+    if (!inst) return;
+    try { localStorage.setItem("ymd-mastodon", inst); } catch (e) {}
+    window.open("https://" + inst + "/share?text=" + encodeURIComponent(shareText + " " + shareUrl), "_blank", "noopener");
+    mastDialog.close();
+  }
+  $("share-ma").addEventListener("click", () => {
+    let saved = "";
+    try { saved = localStorage.getItem("ymd-mastodon") || ""; } catch (e) {}
+    mastInput.value = saved;
+    $("mast-err").hidden = true;
+    mastDialog.showModal ? mastDialog.showModal() : mastDialog.setAttribute("open", "");
+    mastInput.focus();
+  });
+  $("mast-go").addEventListener("click", mastGo);
+  mastInput.addEventListener("keydown", (e) => { if (e.key === "Enter") mastGo(); });
+  $("mast-cancel").addEventListener("click", () => mastDialog.close());
+
+  /* Código QR: se genera en el navegador con qrcode.js, sin servicios externos */
+  if (typeof qrcode === "function") {
+    $("qr-open").hidden = false;
+    $("qr-open").addEventListener("click", () => {
+      const qr = qrcode(0, "M");
+      qr.addData(location.href);
+      qr.make();
+      const svg = qr.createSvgTag({ cellSize: 8, margin: 32, scalable: true });
+      $("qr-box").innerHTML = svg;
+      $("qr-url").textContent = location.host ? location.host + location.pathname : location.href;
+      $("qr-dl").href = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+      const d = $("qr-dialog");
+      d.showModal ? d.showModal() : d.setAttribute("open", "");
+    });
+    $("qr-close").addEventListener("click", () => $("qr-dialog").close());
+  }
+})();
+</script>
+</body>
+</html>
