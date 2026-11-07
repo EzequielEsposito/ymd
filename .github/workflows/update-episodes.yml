@@ -1,0 +1,41 @@
+# Actualiza solo la lista de episodios de la página leyendo el feed de Acast.
+# Corre cada 3 horas (hora UTC) y también a mano desde la pestaña "Actions" > "Run workflow".
+# Si hay un episodio nuevo, guarda el cambio en episodes.js y GitHub Pages republica el sitio.
+name: Actualizar episodios
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v6
+
+      - name: Preparar Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Leer el feed y regenerar episodes.js
+        run: node update-episodes.mjs
+        env:
+          FEED_URL: https://feeds.acast.com/public/shows/ymd
+
+      - name: Guardar el cambio si hay episodios nuevos
+        run: |
+          if git diff --quiet -- episodes.js; then
+            echo "Sin episodios nuevos."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add episodes.js
+            git commit -m "Actualizar episodios desde el feed"
+            git push
+          fi
