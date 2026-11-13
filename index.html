@@ -150,8 +150,10 @@ h2 { font-size: 1.1rem; margin: 0 0 12px; }
 .eps-more li { border-top: 1px solid var(--line); }
 .eps-more:not([hidden]) { animation: fadein .25s ease; }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-.more-btn { margin-top: 16px; gap: 10px; padding: 8px 16px; font-size: .85rem; border-color: var(--line-strong); }
-.more-btn:hover { border-color: var(--ink); }
+.list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.list-head h2 { margin: 0; }
+.more-btn { display: inline-flex; align-items: center; gap: 8px; padding: 6px 0 6px 10px; border: 0; background: none; color: var(--muted); font: 600 .85rem var(--font); cursor: pointer; }
+.more-btn:hover { color: var(--ink); }
 .more-btn::after {
   content: ""; width: 7px; height: 7px; margin: -3px 0 0 2px; border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor;
   transform: rotate(45deg); transition: transform .2s ease;
@@ -269,10 +271,12 @@ body.has-player .page { padding-bottom: calc(120px + env(safe-area-inset-bottom,
     </section>
 
     <section id="recent-sec">
-      <h2 id="recent-title">Últimos episodios</h2>
+      <div class="list-head">
+        <h2 id="recent-title">Últimos episodios</h2>
+        <button class="more-btn" id="more-eps" type="button" aria-expanded="false" aria-controls="eps-more" hidden><span class="lbl">Ver todos</span></button>
+      </div>
       <ul class="eps" id="eps"></ul>
       <ul class="eps eps-more" id="eps-more" hidden></ul>
-      <button class="btn more-btn" id="more-eps" type="button" aria-expanded="false" aria-controls="eps-more" hidden><span class="lbl">Ver todos</span></button>
     </section>
 
     <div class="actions">
