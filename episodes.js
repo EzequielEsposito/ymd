@@ -1,7 +1,8 @@
 /* Archivo generado por update-episodes.mjs a partir del feed de Acast. Regeneralo con: node update-episodes.mjs */
 window.EPISODES = {
-  "count": 74,
+  "count": 75,
   "episodes": [
+    { "title": "Your Musical Doctor #75 - Out of many, one love", "date": "2026-11-14", "durationSec": 3467, "url": "https://ezequielesposito.github.io/ymd", "audio": "https://sphinx.acast.com/p/open/s/61b941fa4ce2a700184b5ffe/e/6af7b2e603ace76da2752f80/media.mp3" },
     { "title": "Your Musical Doctor #74 - A Roberto", "date": "2026-11-05", "durationSec": 3557, "url": "https://shows.acast.com/ymd/episodes/ymd74", "audio": "https://sphinx.acast.com/p/open/s/61b941fa4ce2a700184b5ffe/e/6aea5f2af5930510a00bd39d/media.mp3" },
     { "title": "Your Musical Doctor #73 - Wake Up", "date": "2026-10-28", "durationSec": 3543, "url": "https://shows.acast.com/ymd/episodes/73", "audio": "https://sphinx.acast.com/p/open/s/61b941fa4ce2a700184b5ffe/e/6ae147aa33b363c95d23b384/media.mp3" },
     { "title": "Your Musical Doctor #72 \"Groove in Rock Steady\"", "date": "2022-11-17", "durationSec": 3234, "url": "https://shows.acast.com/ymd/episodes/72", "audio": "https://sphinx.acast.com/p/open/s/61b941fa4ce2a700184b5ffe/e/637a313457b8ab001144544a/media.mp3" },
