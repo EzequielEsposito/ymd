@@ -10,7 +10,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
 const DEFAULT_FEED = "https://feeds.acast.com/public/shows/ymd";
-const MAX_EPISODES = 11; // cuántos guarda; la página muestra los primeros 5 (CONFIG.maxEpisodes)
+const MAX_EPISODES = 500; // guarda todos los episodios: la página muestra los primeros 5 y el resto con "Ver todos"
 
 const source = process.argv[2] || process.env.FEED_URL || DEFAULT_FEED;
 const outFile = new URL("./episodes.js", import.meta.url);
